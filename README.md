@@ -4,4 +4,4 @@ School project from subject Information Retrieval
 
 Planned architecture:
 
-![](doc/architecture.png)
+![](doc/architecture_plan.png)
