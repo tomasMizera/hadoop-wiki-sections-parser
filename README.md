@@ -21,5 +21,8 @@ how to run pyspark shell with databricks **spark-xml** lib
 
 > works when environment variables are set correctly: https://phoenixnap.com/kb/install-spark-on-ubuntu
 
+to submit app to spark with **spark-xml** run:
 
+`spark-submit --packages com.databricks:spark-xml_2.12:0.10.0 example.py`
 
+> mind the order, first type in packages, then file

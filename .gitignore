@@ -1,3 +1,7 @@
 
 env/**
-data/**
+.idea/**
+.vscode/**
+
+raw-data/**
+
