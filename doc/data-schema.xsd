@@ -1,0 +1,90 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.mediawiki.org/xml/export-0.10/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="mediawiki">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="siteinfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="sitename"/>
+              <xs:element type="xs:string" name="dbname"/>
+              <xs:element type="xs:string" name="base"/>
+              <xs:element type="xs:string" name="generator"/>
+              <xs:element type="xs:string" name="case"/>
+              <xs:element name="namespaces">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="namespace" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:short" name="key" use="optional"/>
+                            <xs:attribute type="xs:string" name="case" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="page" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="title"/>
+              <xs:element type="xs:byte" name="ns"/>
+              <xs:element type="xs:short" name="id"/>
+              <xs:element name="redirect" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="title" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="revision">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:int" name="id"/>
+                    <xs:element type="xs:int" name="parentid"/>
+                    <xs:element type="xs:dateTime" name="timestamp"/>
+                    <xs:element name="contributor">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element type="xs:string" name="username" minOccurs="0"/>
+                          <xs:element type="xs:int" name="id" minOccurs="0"/>
+                          <xs:element type="xs:string" name="ip" minOccurs="0"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="minor" minOccurs="0"/>
+                    <xs:element type="xs:string" name="comment" minOccurs="0"/>
+                    <xs:element type="xs:string" name="model"/>
+                    <xs:element type="xs:string" name="format"/>
+                    <xs:element name="text">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:int" name="bytes" use="optional"/>
+                            <xs:attribute ref="xml:space"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="sha1"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:float" name="version"/>
+      <xs:attribute ref="xml:lang"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+
