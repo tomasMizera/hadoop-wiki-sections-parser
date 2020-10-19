@@ -54,6 +54,7 @@ df.show()
 LOGGER.info("File opened")
 
 dfp = df.select("text").toPandas() #convert spark dataframe to pandas df
+# TODO: remove pandas
 
 # by default text was set as index
 dfp = dfp.reset_index()
