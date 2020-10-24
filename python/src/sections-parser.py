@@ -67,8 +67,8 @@ assert( type(text) is str )
 LOGGER.info("Started parsing sections ...")
 
 # now get article tags by splitting with regex
-# TODO: fix regex to not match nested sections
-text_chunks = re.split("(==[A-Za-z0-9,-_:.`;' ]+==)", text)
+# link: https://regex101.com/r/IsEtKn/3
+text_chunks = re.split("([=]{2})([A-Za-z0-9,\-_:\.`;' ]+)([=]{2})[^=]", text)
 
 # we now have array holding section title, text, section title, text,...
 # convert it to dict
@@ -100,5 +100,5 @@ LOGGER.info("Parsing done")
 
 # print the result
 prnt = lambda x: print(x)
-{key: prnt(section) for key, section in sections.items()}
+{ key: prnt(section) for key, section in sections.items() }
 

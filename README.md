@@ -26,3 +26,9 @@ to submit app to spark with **spark-xml** run:
 `spark-submit --packages com.databricks:spark-xml_2.12:0.10.0 example.py`
 
 > mind the order, first type in packages, then file
+
+Run master process
+`start-master.sh`
+
+Run random worker process
+`start-slave.sh spark://tomasmizera:7077 -c 4 -m 4G -d raw-data/spark-logs`
