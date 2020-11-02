@@ -41,8 +41,8 @@ spark = SparkSession.builder \
 log4jLogger = spark._jvm.org.apache.log4j
 LOGGER = log4jLogger.LogManager.getLogger(__name__)
 
-# TODO: pass file as argument to spark-submit instead of hardcoded path
-filepath = "file:///home/tomasmizera/school/vinf/data/single-page-revision.xml"
+# TODO: copy file to HDFS and load it from there
+filepath = "file:///home/tomasmizera/school/vinf/data/data-example.xml"
 
 LOGGER.info("About to open file " + filepath + " ...")
 df = spark.read.format("com.databricks.spark.xml") \
