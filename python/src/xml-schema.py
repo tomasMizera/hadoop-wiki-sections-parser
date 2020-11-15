@@ -12,6 +12,8 @@ args = vars(argparser.parse_args())
 
 app = args.get("--app-name", "mizera.spark.wiki")
 master_addr = args.get("--master-addr", "spark://tomasmizera:7077")
+filein = args.get("in")
+outdir = args.get("out")
 
 # Create Spark session
 spark = None
@@ -37,12 +39,8 @@ customSchema = StructType([
     ]), True)
 ])
 
-# This needs to be added!
-# .config("spark.executor.uri", "hdfs://147.213.75.180/user/hadmin/pyspark.tgz")
-
-filein = vars(args)['in']
-
 df = spark.read.format("com.databricks.spark.xml") \
     .option("rowTag","page") \
     .load(filein, schema=customSchema)
 
+print(df.take(2))
