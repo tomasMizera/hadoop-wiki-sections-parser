@@ -73,6 +73,7 @@ def parse_section(text):
 
 textRDD\
     .map(parse_section)\
+    .filter(lambda x: x)\
     .repartition(10)\
     .saveAsTextFile(fileout)
 
