@@ -34,6 +34,11 @@ Run master process
 Run random worker process
 `start-slave.sh spark://tomasmizera:7078 -c 4 -m 4G -d raw-data/spark-logs`
 
+**Submit parser:**  
+
+![](doc/parser-help.png)
+
+```spark-submit --packages com.databricks:spark-xml_2.12:0.10.0 sections-parser.py <input-file> <output-folder> --master-addr <master-address> --spark <spark executor uri> --app-name <application name>```
 
 ---
 
