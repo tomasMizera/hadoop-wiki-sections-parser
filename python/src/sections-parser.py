@@ -3,6 +3,7 @@ from pyspark.sql.types import *
 import re
 import argparse
 from functools import reduce
+import json as JSON
 
 argparser = argparse.ArgumentParser(description="Spark application", usage="Use with Spark-Submit.sh")
 argparser.add_argument('in', help="Input xml file")
@@ -49,26 +50,25 @@ df = spark.read.format("com.databricks.spark.xml") \
     .option("rowTag", "page") \
     .load(filein, schema=customSchema)
 
-df.show()
-
 LOGGER.info("File opened")
 
-textRDD = df.select("text").rdd
+dfRDD = df.rdd
 
 LOGGER.info("Started parsing sections ...")
 
 
-def parse_section(text):
-    raw_text = text.text._VALUE
+def parse_section(row):
+    json = {'hash': row.revision.sha1, 'title': row.title}
+    raw_text = row.revision.text
     text_chunks = re.findall("([=]{2})([A-Za-z0-9,\-_:\.`;' ]+)([=]{2})[^=]", raw_text)
-
-    # we have a list of tuples that contain caught groups
     amap = map(lambda x: list(filter(lambda y: not y.startswith('=='), x)), text_chunks)
+    amap = reduce(lambda a, b: a + b, amap, [])
+    if len(amap) > 0:
+        json['sections'] = amap
+        return JSON.dumps(json)
 
-    return reduce(lambda a, b: a+b, amap, [])
 
-
-textRDD \
+dfRDD \
     .map(parse_section) \
     .filter(lambda x: x) \
     .repartition(10) \

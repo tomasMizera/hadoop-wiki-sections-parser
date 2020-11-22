@@ -13,7 +13,8 @@ Pripadne pozriet ako pouzit ine explanatory
 
 
 ----
-### Update 19.10.
+
+### Spark
 
 how to run pyspark shell with databricks **spark-xml** lib 
 
@@ -31,4 +32,15 @@ Run master process
 `start-master.sh`
 
 Run random worker process
-`start-slave.sh spark://tomasmizera:7077 -c 4 -m 4G -d raw-data/spark-logs`
+`start-slave.sh spark://tomasmizera:7078 -c 4 -m 4G -d raw-data/spark-logs`
+
+
+---
+
+### Index
+
+Navigate to index/elastickibana and run `docker-compose up` 
+
+> if error `Exit 78` occurs, set `sudo sysctl -w vm.max_map_count=262144`
+
+
