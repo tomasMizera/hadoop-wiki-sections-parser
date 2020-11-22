@@ -1,4 +1,4 @@
-# hadoop-wiki-sections-parser
+# hadoop(Spark!)-wiki-sections-parser
 
 School project from subject Information Retrieval
 
