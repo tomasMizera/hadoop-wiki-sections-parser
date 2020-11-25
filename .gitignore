@@ -4,4 +4,4 @@ env/**
 .vscode/**
 
 raw-data/**
-
+**/.ipynb_**

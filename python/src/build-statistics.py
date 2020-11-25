@@ -1,19 +1,18 @@
 import sys
 import glob
 from os import path as PATH
-# import nltk
 import json as JSON
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
-# import gc
+from collections import Counter
 
-if len(sys.argv) < 2:
-    print("Please provide path to directory")
+if len(sys.argv) < 3:
+    print("Please provide path to directory and out file")
     exit()
 
 path = sys.argv[1]
+path_out = sys.argv[2]
 analyzer = None
 
 # defines for computing stats
@@ -21,6 +20,7 @@ DF = 0
 CF = 1
 stats = {}
 stop_words = set(stopwords.words('english'))
+# stop_words = stop_words + {','}
 
 
 def stemma_lemma():
@@ -32,28 +32,35 @@ def _get_file_names(_in_dir):
     return files
 
 
-def parse_section(section):
+def process_document(section):
     if not section or not analyzer:
         return
 
     tokens = word_tokenize(section)
-    for token in tokens:
-        if token not in stop_words:
-            t = analyzer.lemmatize(token.lower())  # depends on lemmatizer or stemmer
-            # t = analyzer.stem(token.lower())
-            stats[t] = stats[t] + 1 if stats.get(t, None) else 1
+    tokens = list(map(lambda t: t.lower(), tokens))
+    tokens = list(filter(lambda t: t not in stop_words, tokens))
+    tokens = list(map(lambda t: analyzer.lemmatize(t), tokens))
+    tokens_counter = Counter(tokens)
+
+    # count frequencies
+    for token in tokens_counter.keys():
+        if stats.get(token, None):
+            stats[token]["cf"] = stats[token]["cf"] + tokens_counter[token]
+            stats[token]["df"] += 1
+        else:
+            stats[token] = {"cf": tokens_counter[token], "df": 1}
 
 
-def parse_document(doc):
+def process_page(doc):
     if not doc or not doc.get("sections", None):
         return
 
     # iterate over array of sections and parse each section
     for section in doc.get("sections", []):
-        parse_section(section)
+        process_document(section)  # here we consider section as a document
 
 
-def _merge_dicts(_):
+def _sort_func():
     pass
 
 
@@ -64,17 +71,17 @@ def process_files(files):
 
         f = open(file, "r")
         for line in f.readlines():
-            parse_document(JSON.loads(line))  # here we consider page as document
+            process_page(JSON.loads(line))
         f.close()
-        # stats = _merge_dicts(stats_file, stats)
-        # gc.collect()
         print(f'file {file} processed!')
 
     print('done processing files! saving..')
 
-    with open('stats.json', 'w') as f:
-        cf = {"cf": stats}
-        JSON.dump(cf, f)
+    with open(path_out, 'w') as f:
+        # sort items by document frequency
+        stats = {k: v for k, v in sorted(stats.items(), key=lambda item: item[1]["df"], reverse=True)}
+        JSON.dump(stats, f)
+        f.close()
         print('saved!')
 
 
