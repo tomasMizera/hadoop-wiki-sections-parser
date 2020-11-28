@@ -6,12 +6,15 @@ def search(query, _engine):
     query_body = {
         "query": {
             "match": {
-                "sections": query
+                "sections": {
+                    "query": query,
+                    "fuzziness": "AUTO"
+                }
             }
         }
     }
 
-    return _engine.search(index="sections-i", body=query_body)
+    return _engine.search(index="financial", body=query_body)
 
 
 def process_out(output):

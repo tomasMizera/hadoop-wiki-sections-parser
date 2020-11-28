@@ -32,21 +32,32 @@ def _get_mapping():
 
     mapping = {
         "settings": {
-            "number_of_shards": 1,
-            "number_of_replicas": 0
+            "number_of_shards": 2,
+            "number_of_replicas": 1,
+            "analysis": {
+                "standard_english_stopwords": {
+                    "type": "standard",
+                    "stopwords": "_english_"
+                }
+            }
         },
         "mappings": {
             "members": {
                 "dynamic": "strict",
                 "properties": {
-                    "hash": {
-                        "type": "text"
+                    "section": {
+                        "type": "text",
+                        "copy_to": "m_fulltext",
+                        "analyzer": "standard"
                     },
                     "title": {
-                        "type": "text"
+                        "type": "text",
+                        "copy_to": "m_fulltext",
+                        "analyzer": "standard"
                     },
-                    "sections": {
-                        "type": "text"
+                    "m_fulltext": {
+                        "type": "text",
+                        "analyzer": "standard_english_stopwords"
                     }
                 }
             }
