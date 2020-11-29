@@ -1,4 +1,4 @@
-import elasticsearch as EC
+import elasticsearch
 import sys
 
 
@@ -6,7 +6,7 @@ def _connect_elastic():
     print("... connecting to elastic")
 
     _es = None
-    _es = EC.Elasticsearch([
+    _es = elasticsearch.Elasticsearch([
         {
             'host': 'localhost',
             'port': 9200
@@ -47,12 +47,10 @@ def _get_mapping():
                 "properties": {
                     "section": {
                         "type": "text",
-                        "copy_to": "m_fulltext",
                         "analyzer": "standard"
                     },
                     "title": {
                         "type": "text",
-                        "copy_to": "m_fulltext",
                         "analyzer": "standard"
                     },
                     "m_fulltext": {
@@ -67,7 +65,11 @@ def _get_mapping():
     return mapping
 
 
-indexname = sys.argv[1] if len(sys.argv) > 1 else "test-index"
+if len(sys.argv) < 2:
+    print("Please specify index name")
+    exit()
+
+indexname = sys.argv[1]
 
 if __name__ == "__main__":
     elastic = _connect_elastic()

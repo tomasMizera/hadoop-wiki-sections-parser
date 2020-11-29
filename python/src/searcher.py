@@ -1,33 +1,78 @@
-import elasticsearch as EC
+import elasticsearch
 
 
 def search(query, _engine):
 
     query_body = {
         "query": {
-            "match": {
-                "sections": {
-                    "query": query,
-                    "fuzziness": "AUTO"
-                }
+            "bool": {
+                "should": [
+                    {
+                        "match_phrase": {
+                            "section": {
+                                "query": query,
+                                "boost": 6,
+                                "slop": 10
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "section": {
+                                "query": query,
+                                "boost": 5,
+                                "fuzziness": "AUTO"
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "title": {
+                                "query": query
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "m_fulltext": {
+                                "query": query,
+                                "boost": 3,
+                                "fuzziness": "AUTO"
+                            }
+                        }
+                    }
+                ]
             }
         }
     }
 
-    return _engine.search(index="financial", body=query_body)
+    if query.__contains__("*"):
+        query_body['query']['bool']['should'].append({"wildcard": {"m_fulltext": {"value": query}}})
+
+    out = _engine.search(index="testing-index", body=query_body)
+
+    # repeat search with wildcard if nothing was found
+    if out['hits']['total']['value'] < 1 and '*' not in query:
+        return search(query + "*", _engine)
+
+    return out
 
 
 def process_out(output):
-    print("Found: " + str(output['hits']['total']['value']))
 
-    for out in output['hits']['hits']:
-        print(out['_source']['title'])
-        print(out['_source']['sections'])
-        print()
+    def _print_output():
+        print("============== Search results =================")
+        print("Found: " + str(output['hits']['total']['value']))
+
+        for out in output['hits']['hits']:
+            print(str(out['_score'])[:7] + " => " + out['_source']['title'] + ": " + out['_source']['section'])
+        print("================================================\n")
+
+    _print_output()
 
 
 if __name__ == "__main__":
-    _ec = EC.Elasticsearch("localhost:9200")
+    _ec = elasticsearch.Elasticsearch("localhost:9200")
     if _ec.ping():
         print("Connection established to localhost")
     else:
