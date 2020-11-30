@@ -35,10 +35,10 @@ def process_files(files, es_client, index):
     def _process_file(_file):
         with open(_file, 'r') as f:
             for page in f.readlines():
-                print(page)
                 page = json.loads(page)
                 if not page.get("sections", None):
                     continue
+
                 title = page["title"].strip()
                 sections = page["sections"]
                 for section in sections:
@@ -64,5 +64,5 @@ _index = sys.argv[2]
 
 if __name__ == "__main__":
     client = _connect_elastic()
-    # process_files(_get_file_names(_in_path), client, _index)
-    process_files(['/home/tomasmizera/school/vinf/raw-data/testing/aaa.ndjson'], client, _index)
+    process_files(_get_file_names(_in_path), client, _index)
+    # process_files(['/home/tomasmizera/school/vinf/raw-data/testing/aaa.ndjson'], client, _index)
